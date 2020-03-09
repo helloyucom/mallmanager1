@@ -19,6 +19,14 @@ Vue.proototype.$http = axios; */
 import MyServerHttp from '@/plugins/http.js'
 Vue.use(MyServerHttp)
 
+// moment
+import moment from 'moment'
+
+// 全局过滤器
+Vue.filter('fmtDate', (v) => {
+  return moment(v).format('YYYY-MM-DD')
+})
+
 
 Vue.config.productionTip = false
 
