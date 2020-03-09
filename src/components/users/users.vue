@@ -133,11 +133,17 @@
     <!-- 对话框-分配角色 -->
     <el-dialog title="分配角色" :visible.sync="dialogFormVisibleRole">
       <el-form :model="form">
-        <el-form-item label="用户名" label-width="100px">{{"当前用户的用户名"}}</el-form-item>
+        <el-form-item label="用户名" label-width="100px">{{currentUsername}}</el-form-item>
         <el-form-item label="角色" label-width="100px">
           <el-select v-model="currentRoleId">
-            <el-option label="请选择" :value="-1"></el-option>
-            <!-- <el-option label="区域二" value="beijing"></el-option> -->
+            <el-option label="请选择" :value="-1" disabled></el-option>
+            <el-option label="超级管理员" :value="0" disabled></el-option>
+            <el-option
+              v-for="(item, key) in roles"
+              :key="key"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -168,7 +174,9 @@ export default {
         email: "",
         mobile: ""
       },
-      currentRoleId: -1 // 当前用户的角色id
+      currentRoleId: -1, // 当前用户的角色id
+      currentUsername: "", // 分配角色对话框中显示的当前用户名
+      roles: [] // 角色列表
     };
   },
   created() {
@@ -176,8 +184,22 @@ export default {
   },
   methods: {
     /** 显示当前用户的角色-对话框 */
-    showUserRoleDialog(user) {
-      this.currentRoleId = user.id
+    async showUserRoleDialog(user) {
+      // 当前用户角色名显示
+      this.currentUsername = user.username;
+      // 获取角色列表
+      const res = await this.$http.get(`roles`);
+      const {
+        data,
+        meta: { msg, status }
+      } = res.data;
+      if (status === 200) {
+        this.roles = data;
+      }
+      // 当前用户的角色id赋值给currentRoleId
+      const res2 = await this.$http.get(`users/${user.id}`);
+      this.currentRoleId = res2.data.data.rid;  // 接口文档xiede是role_id，写错了
+      // 打开对话框
       this.dialogFormVisibleRole = true;
     },
     /** 修改用户状态 */
