@@ -48,15 +48,25 @@
       </el-table-column>
     </el-table>
     <!-- 分页 -->
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pagenum"
+      :page-sizes="[1, 2, 3, 4]"
+      :page-size="1"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+    ></el-pagination>
   </el-card>
 </template>
+
 <script>
 export default {
   data() {
     return {
       query: "", // 搜索内容
       pagenum: 1, // 第几页
-      pagesize: 2, // 一页几条数据
+      pagesize: 1, // 一页几条数据
       userlist: [], // 表格数据
       total: 0 // 总数
     };
@@ -65,6 +75,18 @@ export default {
     this.getUserList();
   },
   methods: {
+    /** 分页 页码变化 每页条数变化 */
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.pagesize = val;
+      this.pagenum = 1;
+      this.getUserList();
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.pagenum = val;
+      this.getUserList();
+    },
     /** 分页请求用户数据 */
     async getUserList() {
       const res = await this.$http.get(
@@ -85,13 +107,16 @@ export default {
   }
 };
 </script>
+
 <style>
 .box-card {
   height: 100%;
 }
+
 .searchRow {
   margin-top: 20px;
 }
+
 .inputSearch {
   width: 300px;
 }
