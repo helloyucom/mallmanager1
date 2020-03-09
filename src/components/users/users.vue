@@ -25,7 +25,7 @@
     <!-- 表格 -->
     <el-table :data="userlist" style="width: 100%">
       <el-table-column type="index" label="#" width="80"></el-table-column>
-      <el-table-column prop="role_name" label="姓名" width="180"></el-table-column>
+      <el-table-column prop="username" label="姓名" width="180"></el-table-column>
       <el-table-column prop="email" label="邮箱"></el-table-column>
       <el-table-column prop="mobile" label="电话"></el-table-column>
       <el-table-column label="创建时间">
@@ -48,7 +48,14 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
-          <el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDelUserMsgBox()"></el-button>
+          <el-button
+            size="mini"
+            plain
+            type="danger"
+            icon="el-icon-delete"
+            circle
+            @click="showDelUserMsgBox(scope.row.id)"
+          ></el-button>
           <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
         </template>
       </el-table-column>
@@ -112,17 +119,25 @@ export default {
   },
   methods: {
     /** 删除用户-显示确认框 */
-    showDelUserMsgBox() {
+    showDelUserMsgBox(userId) {
       this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
+        .then(async () => {
+          const res = await this.$http.delete(`users/${userId}`);
+          if (res.data.meta.status === 200) {
+            // 提示
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+            // 回到首页
+            this.pagenum = 1;
+            // 更新视图
+            this.getUserList();
+          }
         })
         .catch(() => {
           this.$message({
