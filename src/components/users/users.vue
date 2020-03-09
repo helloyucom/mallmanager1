@@ -19,7 +19,7 @@
         >
           <el-button @click="searchUser()" slot="append" icon="el-icon-search"></el-button>
         </el-input>
-        <el-button type="success" @click="addUser()">添加用户</el-button>
+        <el-button type="success" @click="showAddUserDialog()">添加用户</el-button>
       </el-col>
     </el-row>
     <!-- 表格 -->
@@ -112,7 +112,7 @@ export default {
   },
   methods: {
     /** 添加用户-显示对话框 */
-    addUser() {
+    showAddUserDialog() {
        this.dialogFormVisibleAdd = true
     },
     /** 清除搜索框 */
