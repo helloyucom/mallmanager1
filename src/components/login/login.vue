@@ -39,9 +39,9 @@ export default {
             if (status === 200) {
                 // 登录成功
                 // 1. 跳转到home
+                this.$router.push({name: 'home'})
                 // 2. 提示成功
                 this.$message.success('登录成功')
-                // this.$router.push({name: 'home'})
             } else {
                 // 不成功
                 this.$message.warning(msg)
