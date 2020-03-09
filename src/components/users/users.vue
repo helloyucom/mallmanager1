@@ -42,7 +42,12 @@
       </el-table-column>
       <el-table-column label="用户状态">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch
+            v-model="scope.row.mg_state"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="changeMgState(scope.row)"
+          ></el-switch>
         </template>
       </el-table-column>
       <el-table-column label="操作">
@@ -63,7 +68,14 @@
             circle
             @click="showDelUserMsgBox(scope.row.id)"
           ></el-button>
-          <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
+          <el-button
+            size="mini"
+            plain
+            type="success"
+            icon="el-icon-check"
+            circle
+            @click="showUserRoleDialog(scope.row)"
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -118,6 +130,22 @@
         <el-button type="primary" @click="handleEditUser">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 对话框-分配角色 -->
+    <el-dialog title="分配角色" :visible.sync="dialogFormVisibleRole">
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">{{"当前用户的用户名"}}</el-form-item>
+        <el-form-item label="角色" label-width="100px">
+          <el-select v-model="currentRoleId">
+            <el-option label="请选择" :value="-1"></el-option>
+            <!-- <el-option label="区域二" value="beijing"></el-option> -->
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleRole = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisibleRole = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -133,18 +161,37 @@ export default {
       // 对话框-添加
       dialogFormVisibleAdd: false,
       dialogFormVisibleEdit: false, // 编辑用户对话框显示/隐藏
+      dialogFormVisibleRole: false, // 分配橘色对话框显示/隐藏
       form: {
         username: "",
         password: "",
         email: "",
         mobile: ""
-      }
+      },
+      currentRoleId: -1 // 当前用户的角色id
     };
   },
   created() {
     this.getUserList();
   },
   methods: {
+    /** 显示当前用户的角色-对话框 */
+    showUserRoleDialog(user) {
+      this.currentRoleId = user.id
+      this.dialogFormVisibleRole = true;
+    },
+    /** 修改用户状态 */
+    async changeMgState(user) {
+      // users/:uId/state/:type
+      const res = await this.$http.put(
+        `users/${user.id}/state/${user.mg_state}`
+      );
+      if (res.data.meta.status === 200) {
+        this.$message.success(res.data.meta.msg);
+      } else {
+        this.$message.warning(res.data.meta.msg);
+      }
+    },
     /** 编辑用户-提交数据 */
     async handleEditUser(userId) {
       // 关闭对话框
@@ -222,7 +269,7 @@ export default {
     },
     /** 添加用户-显示对话框 */
     showAddUserDialog() {
-      this.form = {}
+      this.form = {};
       this.dialogFormVisibleAdd = true;
     },
     /** 清除搜索框 */
