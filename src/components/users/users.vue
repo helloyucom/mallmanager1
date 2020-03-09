@@ -59,7 +59,7 @@
       @current-change="handleCurrentChange"
       :current-page="pagenum"
       :page-sizes="[1, 2, 3, 4]"
-      :page-size="1"
+      :page-size="pagesize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
     ></el-pagination>
@@ -82,7 +82,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisibleAdd = false">确 定</el-button>
+        <el-button type="primary" @click="handleAddUser()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -94,7 +94,7 @@ export default {
     return {
       query: "", // 搜索内容
       pagenum: 1, // 第几页
-      pagesize: 1, // 一页几条数据
+      pagesize: 5, // 一页几条数据
       userlist: [], // 表格数据
       total: 0, // 总数
       // 对话框-添加
@@ -111,9 +111,30 @@ export default {
     this.getUserList();
   },
   methods: {
+    /** 添加用户-提交数据 */
+    async handleAddUser() {
+      // 关闭对话框
+      this.dialogFormVisibleAdd = false;
+      // 提交数据
+      const res = await this.$http.post(`users`, this.form);
+      const {
+        meta: { msg, status },
+        data
+      } = res.data;
+      if (status === 201) {
+        // 提示
+        this.$message.success(msg);
+      } else {
+        this.$message.warning(msg);
+      }
+      // 刷新列表
+      this.getUserList();
+      // 清空表单
+      this.form = {};
+    },
     /** 添加用户-显示对话框 */
     showAddUserDialog() {
-       this.dialogFormVisibleAdd = true
+      this.dialogFormVisibleAdd = true;
     },
     /** 清除搜索框 */
     clearUser() {
@@ -147,9 +168,9 @@ export default {
       if (status === 200) {
         this.userlist = users;
         this.total = total;
-        this.$message.success(msg);
+        //   this.$message.success(msg);
       } else {
-        this.$message.success(msg);
+        //   this.$message.success(msg);
       }
     }
   }
