@@ -19,7 +19,7 @@
         >
           <el-button @click="searchUser()" slot="append" icon="el-icon-search"></el-button>
         </el-input>
-        <el-button type="success" plain>添加用户</el-button>
+        <el-button type="success" @click="addUser()">添加用户</el-button>
       </el-col>
     </el-row>
     <!-- 表格 -->
@@ -63,6 +63,28 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
     ></el-pagination>
+    <!-- 对话框 -->
+    <!-- 对话框-添加用户 -->
+    <el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd">
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">
+          <el-input v-model="form.username" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" label-width="100px">
+          <el-input v-model="form.password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" label-width="100px">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" label-width="100px">
+          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisibleAdd = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -74,16 +96,28 @@ export default {
       pagenum: 1, // 第几页
       pagesize: 1, // 一页几条数据
       userlist: [], // 表格数据
-      total: 0 // 总数
+      total: 0, // 总数
+      // 对话框-添加
+      dialogFormVisibleAdd: false,
+      form: {
+        username: "",
+        password: "",
+        email: "",
+        mobile: ""
+      }
     };
   },
   created() {
     this.getUserList();
   },
   methods: {
+    /** 添加用户-显示对话框 */
+    addUser() {
+       this.dialogFormVisibleAdd = true
+    },
     /** 清除搜索框 */
     clearUser() {
-       this.getUserList()
+      this.getUserList();
     },
     /** 搜索用户 */
     searchUser() {
