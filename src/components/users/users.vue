@@ -48,7 +48,7 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
-          <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+          <el-button size="mini" plain type="danger" icon="el-icon-delete" circle @click="showDelUserMsgBox()"></el-button>
           <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
         </template>
       </el-table-column>
@@ -58,7 +58,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="pagenum"
-      :page-sizes="[1, 2, 3, 4]"
+      :page-sizes="[5, 10, 20, 40]"
       :page-size="pagesize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
@@ -111,6 +111,26 @@ export default {
     this.getUserList();
   },
   methods: {
+    /** 删除用户-显示确认框 */
+    showDelUserMsgBox() {
+      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
     /** 添加用户-提交数据 */
     async handleAddUser() {
       // 关闭对话框
