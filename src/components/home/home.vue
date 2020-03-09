@@ -93,6 +93,15 @@
 export default {
   data() {
     return {};
+  },
+  beforeCreate() {
+      // 从localStorge中获取token
+      const token = localStorage.getItem('token')
+      if (!token) {
+          // 如果没有token，跳转到登录页中
+          this.$router.push({name: 'login'})
+          this.$message.warning("请登录")
+      }
   }
 };
 </script>

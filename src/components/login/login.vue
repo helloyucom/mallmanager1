@@ -55,7 +55,7 @@ export default {
   align-items: center;
 }
 .login-wrap .login-form {
-  width: 33%;
+  width: 30%;
   background-color: #fff;
   border-radius: 5px;
   padding: 30px;
