@@ -47,7 +47,14 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+          <el-button
+            size="mini"
+            plain
+            type="primary"
+            icon="el-icon-edit"
+            circle
+            @click="showEditUserDialog(scope.row)"
+          ></el-button>
           <el-button
             size="mini"
             plain
@@ -92,6 +99,25 @@
         <el-button type="primary" @click="handleAddUser()">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 对话框-编辑用户 -->
+    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit">
+      <!-- 对话框关闭时情况form数据 -->
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">
+          <el-input v-model="form.username" autocomplete="off" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" label-width="100px">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" label-width="100px">
+          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+        <el-button type="primary" @click="handleEditUser">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -106,6 +132,7 @@ export default {
       total: 0, // 总数
       // 对话框-添加
       dialogFormVisibleAdd: false,
+      dialogFormVisibleEdit: false, // 编辑用户对话框显示/隐藏
       form: {
         username: "",
         password: "",
@@ -118,6 +145,32 @@ export default {
     this.getUserList();
   },
   methods: {
+    /** 编辑用户-提交数据 */
+    async handleEditUser(userId) {
+      // 关闭对话框
+      this.dialogFormVisibleEdit = false;
+      // 提交数据
+      const res = await this.$http.put(`users/${this.form.id}`, this.form);
+      const {
+        meta: { msg, status },
+        data
+      } = res.data;
+      if (status === 200) {
+        // 提示
+        this.$message.success(msg);
+      } else {
+        this.$message.warning(msg);
+      }
+      // 刷新列表
+      this.getUserList();
+    },
+    /** 编辑用户-显示对话框 */
+    showEditUserDialog(user) {
+      // 获取用户数据
+      this.form = user;
+      // 显示编辑对话框
+      this.dialogFormVisibleEdit = true;
+    },
     /** 删除用户-显示确认框 */
     showDelUserMsgBox(userId) {
       this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
@@ -169,6 +222,7 @@ export default {
     },
     /** 添加用户-显示对话框 */
     showAddUserDialog() {
+      this.form = {}
       this.dialogFormVisibleAdd = true;
     },
     /** 清除搜索框 */
