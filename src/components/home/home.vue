@@ -6,7 +6,7 @@
           <h2>电商后台管理系统</h2>
         </el-col>
         <el-col :span="1">
-          <a href="#" class="loginOut">退出</a>
+          <a href="#" class="loginOut" @click="handleLoginOut()">退出</a>
         </el-col>
       </el-row>
     </el-header>
@@ -101,6 +101,17 @@ export default {
           // 如果没有token，跳转到登录页中
           this.$router.push({name: 'login'})
           this.$message.warning("请登录")
+      }
+      // 继续渲染组件
+  },
+  methods: {
+      handleLoginOut() {
+        // 销毁localStorage中的token
+        localStorage.clear()
+        // 回到登录页
+        this.$router.push({name: 'login'})
+        // 提示退出成功
+        this.$message.success('退出成功')
       }
   }
 };
