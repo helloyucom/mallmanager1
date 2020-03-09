@@ -32,14 +32,20 @@
 
         <!-- slot-scope的值userlist其实就是el-table绑定的数据userlist
         userlist.row -> 数组中的每个对象-->
-        <template slot-scope="userlist">{{userlist.row.create_time | fmtDate}}</template>
+        <template slot-scope="scope">{{scope.row.create_time | fmtDate}}</template>
       </el-table-column>
       <el-table-column label="用户状态">
-        <template slot-scope="userlist">
-          <el-switch v-model="userlist.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </template>
       </el-table-column>
-      <el-table-column prop="username" label="操作"></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+          <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+          <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <!-- 分页 -->
   </el-card>
