@@ -10,8 +10,14 @@
     <!-- 搜索 -->
     <el-row class="searchRow">
       <el-col>
-        <el-input placeholder="请输入内容" v-model="query" class="inputSearch">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input
+          placeholder="请输入内容"
+          v-model="query"
+          class="inputSearch"
+          clearable
+          @clear="clearUser()"
+        >
+          <el-button @click="searchUser()" slot="append" icon="el-icon-search"></el-button>
         </el-input>
         <el-button type="success" plain>添加用户</el-button>
       </el-col>
@@ -75,6 +81,14 @@ export default {
     this.getUserList();
   },
   methods: {
+    /** 清除搜索框 */
+    clearUser() {
+       this.getUserList()
+    },
+    /** 搜索用户 */
+    searchUser() {
+      this.getUserList();
+    },
     /** 分页 页码变化 每页条数变化 */
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
