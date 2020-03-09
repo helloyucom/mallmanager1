@@ -11,7 +11,80 @@
       </el-row>
     </el-header>
     <el-container>
-      <el-aside class="aside" width="200px">Aside</el-aside>
+      <el-aside class="aside" width="200px">
+        <el-menu
+        class="menue"
+        :unique-opened="true"
+        >
+          <!-- 1 -->
+          <el-submenu index="1">
+            <template slot="title">
+              <i class="el-icon-user-solid"></i>
+              <span>用户管理</span>
+            </template>
+            <el-menu-item index="1-1">
+              <i class="el-icon-user"></i>
+              <span slot="title">用户列表</span>
+            </el-menu-item>
+          </el-submenu>
+          <!-- 2 -->
+          <el-submenu index="2">
+            <template slot="title">
+              <i class="el-icon-lock"></i>
+              <span>权限管理</span>
+            </template>
+            <el-menu-item index="1-1">
+              <i class="el-icon-notebook-1"></i>
+              <span slot="title">角色列表</span>
+            </el-menu-item>
+            <el-menu-item index="1-1">
+              <i class="el-icon-notebook-2"></i>
+              <span slot="title">权限列表</span>
+            </el-menu-item>
+          </el-submenu>
+          <!-- 3 -->
+          <el-submenu index="3">
+            <template slot="title">
+              <i class="el-icon-menu"></i>
+              <span>商品管理</span>
+            </template>
+            <el-menu-item index="1-1">
+              <i class="el-icon-s-order"></i>
+              <span slot="title">商品列表</span>
+            </el-menu-item>
+            <el-menu-item index="1-1">
+              <i class="el-icon-s-fold"></i>
+              <span slot="title">商品分类</span>
+            </el-menu-item>
+            <el-menu-item index="1-1">
+              <i class="el-icon-setting"></i>
+              <span slot="title">分类参数</span>
+            </el-menu-item>
+          </el-submenu>
+          <!-- 4 -->
+          <el-submenu index="4">
+            <template slot="title">
+              <i class="el-icon-s-order"></i>
+              <span>订单管理</span>
+            </template>
+            <el-menu-item index="1-1">
+              <i class="el-icon-s-claim"></i>
+              <span slot="title">订单列表</span>
+            </el-menu-item>
+          </el-submenu>
+          <!-- 5 -->
+          <el-submenu index="5">
+            <template slot="title">
+              <i class="el-icon-bank-card"></i>
+              <span>数据统计</span>
+            </template>
+            <el-menu-item index="1-1">
+              <i class="el-icon-coin"></i>
+              <span slot="title">数据报表</span>
+            </el-menu-item>
+          </el-submenu>
+        </el-menu>
+      </el-aside>
       <el-main class="main">Main</el-main>
     </el-container>
   </el-container>
@@ -38,11 +111,15 @@ export default {
 }
 /** 头部样式 */
 .middle {
-    text-align: center;
-    line-height: 100%;
+  text-align: center;
+  line-height: 100%;
 }
 .loginOut {
-    text-decoration: none;
-    line-height: 60px;
+  text-decoration: none;
+  line-height: 60px;
+}
+/** 侧边栏 */
+.menue {
+    height: 100%;
 }
 </style>
