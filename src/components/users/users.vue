@@ -149,7 +149,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleRole = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisibleRole = false">确 定</el-button>
+        <el-button type="primary" @click="setRole()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -174,6 +174,8 @@ export default {
         email: "",
         mobile: ""
       },
+      /** 分配角色 */
+      currentUserId: -1, // 当前用户的id
       currentRoleId: -1, // 当前用户的角色id
       currentUsername: "", // 分配角色对话框中显示的当前用户名
       roles: [] // 角色列表
@@ -183,8 +185,15 @@ export default {
     this.getUserList();
   },
   methods: {
+    /** 设置用户角色-请求数据 */
+    async setRole() {
+      const res = await this.$http.put(`users/${this.currentUserId}/role`, {rid: this.currentRoleId});
+      console.log(res);
+    },
     /** 显示当前用户的角色-对话框 */
     async showUserRoleDialog(user) {
+      // 当前用户的id
+      this.currentRoleId = user.id;
       // 当前用户角色名显示
       this.currentUsername = user.username;
       // 获取角色列表
@@ -198,7 +207,7 @@ export default {
       }
       // 当前用户的角色id赋值给currentRoleId
       const res2 = await this.$http.get(`users/${user.id}`);
-      this.currentRoleId = res2.data.data.rid;  // 接口文档xiede是role_id，写错了
+      this.currentRoleId = res2.data.data.rid; // 接口文档xiede是role_id，写错了
       // 打开对话框
       this.dialogFormVisibleRole = true;
     },
