@@ -12,7 +12,8 @@
     <el-table :data="roleList" style="width: 100%">
       <el-table-column type="expand">
         <template slot-scope="scope">
-          <el-row v-for="(item1, i) in scope.row.children" :key="i" style="margin-bottom: 4px;">
+          <el-row v-if="scope.row.children.length === 0"><span>未分配权限</span></el-row>
+          <el-row v-for="(item1, i) in scope.row.children" :key="i" style="margin-bottom: 4px;" v-else>
             <el-col :span="4"><el-tag closable effect="dark" @close="handleClose(item1.authName)">{{item1.authName}}</el-tag><i class="el-icon-arrow-right"></i></el-col>
             <el-col :span="20">
               <el-row v-for="(item2, i) in item1.children" :key="i" style="margin-bottom: 4px;">
