@@ -39,7 +39,7 @@
               <i class="el-icon-notebook-1"></i>
               <span slot="title">角色列表</span>
             </el-menu-item>
-            <el-menu-item index="1-1">
+            <el-menu-item index="rights">
               <i class="el-icon-notebook-2"></i>
               <span slot="title">权限列表</span>
             </el-menu-item>
