@@ -187,8 +187,18 @@ export default {
   methods: {
     /** 设置用户角色-请求数据 */
     async setRole() {
-      const res = await this.$http.put(`users/${this.currentUserId}/role`, {rid: this.currentRoleId});
-      console.log(res);
+      const res = await this.$http.put(`users/${this.currentUserId}/role`, {
+        rid: this.currentRoleId
+      });
+      const {
+        meta: { status, msg }
+      } = res.data;
+      if (status === 200) {
+        this.dialogFormVisibleRole = false;
+        this.$message.success(msg)
+      } else {
+        this.$message.warning(msg)
+      }
       // 这个接口有问题，后台服务会报错
     },
     /** 显示当前用户的角色-对话框 */
