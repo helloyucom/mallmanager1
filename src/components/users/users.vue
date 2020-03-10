@@ -189,6 +189,7 @@ export default {
     async setRole() {
       const res = await this.$http.put(`users/${this.currentUserId}/role`, {rid: this.currentRoleId});
       console.log(res);
+      // 这个接口有问题，后台服务会报错
     },
     /** 显示当前用户的角色-对话框 */
     async showUserRoleDialog(user) {
