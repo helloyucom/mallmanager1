@@ -12,16 +12,16 @@
     <el-table :data="roleList" style="width: 100%">
       <el-table-column type="expand">
         <template slot-scope="scope">
-          <el-row v-for="(item1, i) in scope.row.children" :key="i">
+          <el-row v-for="(item1, i) in scope.row.children" :key="i" style="margin-bottom: 4px;">
             <el-col :span="4"><el-tag closable effect="dark" @close="handleClose(item1.authName)">{{item1.authName}}</el-tag><i class="el-icon-arrow-right"></i></el-col>
             <el-col :span="20">
-              <el-row v-for="(item2, i) in item1.children" :key="i">
+              <el-row v-for="(item2, i) in item1.children" :key="i" style="margin-bottom: 4px;">
                 <el-col :span="4">
                   <el-tag type="success" closable effect="light">{{item2.authName}}</el-tag>
                   <i class="el-icon-arrow-right"></i>
                 </el-col>
                 <el-col :span="20">
-                  <el-tag type="danger" v-for="(item3, i) in item2.children" :key="i" closable effect="plain">
+                  <el-tag type="danger" v-for="(item3, i) in item2.children" :key="i" closable effect="plain" style="margin: 0 4px 4px 0;">
                     {{item3.authName}}
                   </el-tag>
                 </el-col>
