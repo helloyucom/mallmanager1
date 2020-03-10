@@ -194,7 +194,7 @@ export default {
     /** 显示当前用户的角色-对话框 */
     async showUserRoleDialog(user) {
       // 当前用户的id
-      this.currentRoleId = user.id;
+      this.currentUserId = user.id;
       // 当前用户角色名显示
       this.currentUsername = user.username;
       // 获取角色列表
