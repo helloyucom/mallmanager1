@@ -13,82 +13,22 @@
     <el-container>
       <el-aside class="aside" width="200px">
         <!-- 开启路由功能 -->
-        <el-menu
-        class="menue"
-        :router="true"
-        :unique-opened="true"
-        >
+        <el-menu class="menue" :router="true" :unique-opened="true">
           <!-- 1 -->
-          <el-submenu index="1">
+          <el-submenu :index="item.order.toString()" v-for="(item, i) in menus" :key="i">
             <template slot="title">
               <i class="el-icon-user-solid"></i>
-              <span>用户管理</span>
+              <span>{{item.authName}}</span>
             </template>
-            <el-menu-item index="users">
+            <el-menu-item :index="item1.path" v-for="(item1, i) in item.children" :key="i">
               <i class="el-icon-user"></i>
-              <span slot="title">用户列表</span>
-            </el-menu-item>
-          </el-submenu>
-          <!-- 2 -->
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-lock"></i>
-              <span>权限管理</span>
-            </template>
-            <el-menu-item index="role">
-              <i class="el-icon-notebook-1"></i>
-              <span slot="title">角色列表</span>
-            </el-menu-item>
-            <el-menu-item index="rights">
-              <i class="el-icon-notebook-2"></i>
-              <span slot="title">权限列表</span>
-            </el-menu-item>
-          </el-submenu>
-          <!-- 3 -->
-          <el-submenu index="3">
-            <template slot="title">
-              <i class="el-icon-menu"></i>
-              <span>商品管理</span>
-            </template>
-            <el-menu-item index="1-1">
-              <i class="el-icon-s-order"></i>
-              <span slot="title">商品列表</span>
-            </el-menu-item>
-            <el-menu-item index="1-1">
-              <i class="el-icon-s-fold"></i>
-              <span slot="title">商品分类</span>
-            </el-menu-item>
-            <el-menu-item index="1-1">
-              <i class="el-icon-setting"></i>
-              <span slot="title">分类参数</span>
-            </el-menu-item>
-          </el-submenu>
-          <!-- 4 -->
-          <el-submenu index="4">
-            <template slot="title">
-              <i class="el-icon-s-order"></i>
-              <span>订单管理</span>
-            </template>
-            <el-menu-item index="1-1">
-              <i class="el-icon-s-claim"></i>
-              <span slot="title">订单列表</span>
-            </el-menu-item>
-          </el-submenu>
-          <!-- 5 -->
-          <el-submenu index="5">
-            <template slot="title">
-              <i class="el-icon-bank-card"></i>
-              <span>数据统计</span>
-            </template>
-            <el-menu-item index="1-1">
-              <i class="el-icon-coin"></i>
-              <span slot="title">数据报表</span>
+              <span slot="title">{{item1.authName}}</span>
             </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
       <el-main class="main">
-          <router-view></router-view>
+        <router-view></router-view>
       </el-main>
     </el-container>
   </el-container>
@@ -96,27 +36,41 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      menus: []
+    };
   },
   beforeCreate() {
-      // 从localStorge中获取token
-      const token = localStorage.getItem('token')
-      if (!token) {
-          // 如果没有token，跳转到登录页中
-          this.$router.push({name: 'login'})
-          this.$message.warning("请登录")
-      }
-      // 继续渲染组件
+    // 从localStorge中获取token
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // 如果没有token，跳转到登录页中
+      this.$router.push({ name: "login" });
+      this.$message.warning("请登录");
+    }
+    // 继续渲染组件
+  },
+  created() {
+    this.getMenus();
   },
   methods: {
-      handleLoginOut() {
-        // 销毁localStorage中的token
-        localStorage.clear()
-        // 回到登录页
-        this.$router.push({name: 'login'})
-        // 提示退出成功
-        this.$message.success('退出成功')
+    /** 获取导航数据 */
+    async getMenus() {
+      const res = await this.$http.get(`menus`);
+      const {data, meta: {msg, status}} = res.data
+      if (status === 200) {
+        this.menus = data
       }
+    },
+    /** 退出登录 */
+    handleLoginOut() {
+      // 销毁localStorage中的token
+      localStorage.clear();
+      // 回到登录页
+      this.$router.push({ name: "login" });
+      // 提示退出成功
+      this.$message.success("退出成功");
+    }
   }
 };
 </script>
@@ -144,6 +98,6 @@ export default {
 }
 /** 侧边栏 */
 .menue {
-    height: 100%;
+  height: 100%;
 }
 </style>
