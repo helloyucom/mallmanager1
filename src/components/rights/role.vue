@@ -14,15 +14,15 @@
         <template slot-scope="scope">
           <el-row v-if="scope.row.children.length === 0"><span>未分配权限</span></el-row>
           <el-row v-for="(item1, i) in scope.row.children" :key="i" style="margin-bottom: 4px;" v-else>
-            <el-col :span="4"><el-tag closable effect="dark" @close="handleClose(item1.authName)">{{item1.authName}}</el-tag><i class="el-icon-arrow-right"></i></el-col>
+            <el-col :span="4"><el-tag closable effect="dark" @close="deleteRight(scope.row.id, item1.id)">{{item1.authName}}</el-tag><i class="el-icon-arrow-right"></i></el-col>
             <el-col :span="20">
               <el-row v-for="(item2, i) in item1.children" :key="i" style="margin-bottom: 4px;">
                 <el-col :span="4">
-                  <el-tag type="success" closable effect="light">{{item2.authName}}</el-tag>
+                  <el-tag type="success" closable effect="light" @close="deleteRight(scope.row.id, item2.id)">{{item2.authName}}</el-tag>
                   <i class="el-icon-arrow-right"></i>
                 </el-col>
                 <el-col :span="20">
-                  <el-tag type="danger" v-for="(item3, i) in item2.children" :key="i" closable effect="plain" style="margin: 0 4px 4px 0;">
+                  <el-tag type="danger" v-for="(item3, i) in item2.children" :key="i" closable effect="plain" style="margin: 0 4px 4px 0;"  @close="deleteRight(scope.row.id, item3.id)">
                     {{item3.authName}}
                   </el-tag>
                 </el-col>
@@ -76,14 +76,19 @@ export default {
     this.getRoleList();
   },
   methods: {
+    /** 关闭标签-删除权限 */
+    async deleteRight(roleId, rightId) {
+      const res = await this.$http.delete(`roles/${roleId}/rights/${rightId}`)
+      const {meta: {msg, status}} = res.data
+      if (status === 200) {
+        this.$message.success(msg)
+        this.getRoleList()
+      }
+    },
     /** 获取角色列表 */
     async getRoleList() {
       const res = await this.$http.get(`roles`);
       this.roleList = res.data.data;
-    },
-    /** 关闭标签 */
-    handleClose(tag) {
-      console.log(tag)
     }
   }
 };
