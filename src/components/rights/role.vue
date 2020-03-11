@@ -92,6 +92,7 @@
     <!-- 对话框-分配角色 -->
     <el-dialog title="分配角色权限" :visible.sync="dialogVisibleSetRole" @close="currentRoleRights = []">
       <el-tree
+        ref="tree"
         :data="treelist"
         show-checkbox
         node-key="id"
@@ -115,7 +116,7 @@ export default {
       // 权限树形结构的数据
       treelist: [], // 当前所选角色所有权限 包括系统中所有权限和当前角色已有的权限
       currentRoleRights: [], // 当前角色有的权限列表
-      currentRoleId: '',  // 当前需要修改权限的角色的id
+      currentRoleId: "", // 当前需要修改权限的角色的id
       defaultProps: {
         children: "children",
         label: "authName"
@@ -126,20 +127,34 @@ export default {
     this.getRoleList();
   },
   methods: {
+    /** 获取所有全选后半选的节点的id */
+    getAllNodes(leafOnly, includeHalfChecked) {
+      console.log(leafOnly, includeHalfChecked);
+    },
     /** handle点击确定-发起请求-设置角色权限 */
     async handleSetRoleRight() {
-      // 0. 关闭对话框
-      this.dialogVisibleSetRole = false
       // 1. 获取当前角色的id -> roleId  从data选项中获取 -> 打开对话框时设置
       // 2. 获取选择权限的权限id数组 rids
-      let rids = this.currentRoleRights.join(',')
-      console.log(rids)
-      const res = this.$http.post(`roles/${this.currentRoleId}/rights`, "105,104,101")
+      let arr1 = this.$refs.tree.getCheckedKeys(),
+        arr2 = this.$refs.tree.getHalfCheckedKeys();
+      let rids = [...arr1, ...arr2]
+      // 3. 发送请求
+      const res = await this.$http.post(`roles/${this.currentRoleId}/rights`, {rids: rids.join(',')})
+      const {meta: {msg, status}} = res.data
+      if (status === 200) {
+        this.$message.success(msg)
+      } else {
+        this.$message.warning(msg)
+      }
+      // 4. 更新视图
+      this.getRoleList()
+      // 5. 关闭对话框
+      this.dialogVisibleSetRole = false;
     },
     /** 分配/修改权限 */
     async showSetRightDia(role) {
       // 获取系统所有权限的树形列表
-      this.currentRoleId = role.id
+      this.currentRoleId = role.id;
       const res = await this.$http.get(`rights/tree`);
       const {
         data,
