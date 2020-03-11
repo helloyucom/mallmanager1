@@ -5,7 +5,7 @@
       <el-breadcrumb-item :to="{path: '/'}">首页</el-breadcrumb-item>
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb> -->
+    </el-breadcrumb>-->
     <my-bread level1="用户管理" level2="用户列表"></my-bread>
     <!-- 搜索 -->
     <el-row class="searchRow">
@@ -94,10 +94,10 @@
     <el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd">
       <el-form :model="form">
         <el-form-item label="用户名" label-width="100px">
-          <el-input v-model="form.username" autocomplete="off"></el-input>
+          <el-input v-model="form.username" autocomplete="off" ref="username"></el-input>
         </el-form-item>
         <el-form-item label="密码" label-width="100px">
-          <el-input v-model="form.password" autocomplete="off"></el-input>
+          <el-input v-model="form.password" autocomplete="off" type="password"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" label-width="100px">
           <el-input v-model="form.email" autocomplete="off"></el-input>
@@ -118,7 +118,7 @@
         <el-form-item label="用户名" label-width="100px">
           <el-input v-model="form.username" autocomplete="off" disabled></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" label-width="100px">
+        <el-form-item label="邮箱" label-width="100px" ref="email">
           <el-input v-model="form.email" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="电话" label-width="100px">
@@ -195,9 +195,9 @@ export default {
       } = res.data;
       if (status === 200) {
         this.dialogFormVisibleRole = false;
-        this.$message.success(msg)
+        this.$message.success(msg);
       } else {
-        this.$message.warning(msg)
+        this.$message.warning(msg);
       }
       // 这个接口有问题，后台服务会报错 是请求时的问题 已处理
     },
@@ -259,6 +259,10 @@ export default {
       this.form = user;
       // 显示编辑对话框
       this.dialogFormVisibleEdit = true;
+      // 光标定位在username
+      this.$nextTick(()=>{
+        this.$refs.email.$el.querySelector('input').focus()
+      })
     },
     /** 删除用户-显示确认框 */
     showDelUserMsgBox(userId) {
@@ -313,6 +317,10 @@ export default {
     showAddUserDialog() {
       this.form = {};
       this.dialogFormVisibleAdd = true;
+      // 光标定位在username中
+      this.$nextTick(function() {
+        this.$refs.username.$el.querySelector("input").focus();
+      });
     },
     /** 清除搜索框 */
     clearUser() {
