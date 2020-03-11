@@ -3,7 +3,7 @@
     <el-form class="login-form" label-position="top" label-width="80px" :model="formData">
       <h2>用户登录</h2>
       <el-form-item label="用户名">
-        <el-input v-model="formData.username"></el-input>
+        <el-input v-model="formData.username" ref="usernameInput"></el-input>
       </el-form-item>
       <el-form-item label="密码">
         <el-input v-model="formData.password" type="password"></el-input>
@@ -22,7 +22,17 @@ export default {
       }
     };
   },
+  mounted() {
+    this.usernameFocus();
+  },
   methods: {
+    /** 进入登录页，光标显示在用户名输入框 */
+    usernameFocus() {
+      this.$nextTick(()=>{
+        this.$refs.usernameInput.$el.querySelector('input').focus()
+      })
+    },
+    /** 执行登录操作 */
     async handleLogin() {
       const res = await this.$http.post("login", this.formData);
       const {
@@ -32,7 +42,7 @@ export default {
       if (status === 200) {
         // 登录成功
         // 0. 保存token
-        localStorage.setItem('token', data.token)
+        localStorage.setItem("token", data.token);
         // 1. 跳转到home
         this.$router.push({ name: "home" });
         // 2. 提示成功
