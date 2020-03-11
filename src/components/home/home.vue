@@ -17,11 +17,22 @@
           <!-- 1 -->
           <el-submenu :index="item.order.toString()" v-for="(item, i) in menus" :key="i">
             <template slot="title">
-              <i class="el-icon-user-solid"></i>
+              <i class="el-icon-user-solid" v-if="item.order === 1"></i>
+              <i class="el-icon-lock" v-if="item.order === 2"></i>
+              <i class="el-icon-menu" v-if="item.order === 3"></i>
+              <i class="el-icon-s-order" v-if="item.order === 4"></i>
+              <i class="el-icon-bank-card" v-if="item.order === 5"></i>
               <span>{{item.authName}}</span>
             </template>
             <el-menu-item :index="item1.path" v-for="(item1, i) in item.children" :key="i">
-              <i class="el-icon-user"></i>
+              <i class="el-icon-user" v-if="item1.id === 110"></i>
+              <i class="el-icon-notebook-1" v-else-if="item1.id === 111"></i>
+              <i class="el-icon-notebook-2" v-else-if="item1.id === 112"></i>
+              <i class="el-icon-s-order" v-else-if="item1.id === 104"></i>
+              <i class="el-icon-s-fold" v-else-if="item1.id === 115"></i>
+              <i class="el-icon-setting" v-else-if="item1.id === 121"></i>
+              <i class="el-icon-s-claim" v-else-if="item1.id === 107"></i>
+              <i class="el-icon-coin" v-else-if="item1.id === 145"></i>
               <span slot="title">{{item1.authName}}</span>
             </el-menu-item>
           </el-submenu>
