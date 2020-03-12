@@ -75,8 +75,8 @@
         <el-tab-pane name="5" label="商品内容" :disabled="disabled">
           <!-- 富文本 -->
           <el-form-item>
-            <el-button type="primary">添加商品</el-button>
-            <quill-editor></quill-editor>
+            <el-button type="primary" @click="handleAddGoods()">点我-添加商品</el-button>
+            <quill-editor v-model="form.goods_introduce"></quill-editor>
           </el-form-item>
         </el-tab-pane>
       </el-tabs>
@@ -94,6 +94,21 @@ export default {
     quillEditor
   },
   data() {
+    /** 添加商品-请求接口时需要提交的数据分析 */
+    // 1. 不用处理数据
+    // goods_name 商品名称 不能为空
+    // goods_price 价格 不能为空
+    // goods_weight 重量 不能为空
+    // goods_number 数量 不能为空
+    // goods_introduce 介绍 可以为空
+
+    // 2. 需要处理地数据
+    // goods_cat 以为','分割的分类列表 不能为空
+    // selectedOptions arr -> str ','
+
+    // pics 上传的图片临时路径（对象）可以为空 - 在上传/移除图片中处理
+
+    // attrs 商品的参数（数组），包含 `动态参数` 和 `静态属性` 可以为空
     return {
       active: "1",
       // 基本信息
@@ -104,8 +119,8 @@ export default {
         goods_number: "",
         goods_cat: "",
         goods_introduce: "",
-        pics: "",
-        attrs: ""
+        pics: [],
+        attrs: []
       },
       // 级联选择器
       selectedOptions: [1, 3, 6],
@@ -133,20 +148,48 @@ export default {
     this.getCategories();
   },
   methods: {
+    /** 添加商品-发送请求 */
+    async handleAddGoods() {
+      // 处理商品分类 arr -> string(',')
+      this.form.goods_cat = this.selectedOptions.join(",");
+      // 处理图片上传临时路径的数组 -> 在添加图片和移除图片中处理
+      // 处理动态参数和静态参数
+      let arr1 = this.arrDyparams.map(item => {
+        return {
+          attr_id: item.attr_id,
+          attr_value: item.attr_vals
+        };
+      });
+      let arr2 = this.arrStaticparams.map(item => {
+        return {
+          attr_id: item.attr_id,
+          attr_value: item.attr_vals
+        };
+      });
+      this.form.attrs = [...arr1, ...arr2];
+      const res = await this.$http.post(`goods`, this.form)
+      const {meta: {msg, status}} = res.data
+      this.$router.push({name: 'goods'})
+      if (status === 201) {
+          this.$message.success(msg)
+      } else {
+          this.$message.warning(msg)
+      }
+    },
+    /** 上传图片时的相关方法 */
     handlePreview(file) {
       // file.response.data.tmp_path
-      console.log("预览");
-      console.log(file);
     },
     handleRemove(file) {
+      let index = this.form.pics.findIndex(value => {
+        return value === file.response.data.tmp_path;
+      });
+      this.form.pics.splice(index, 1);
       // file.response.data.tmp_path
-      console.log("移除");
-      console.log(file);
     },
     handleSuccess(file) {
+      this.form.pics.push({ pic: file.data.tmp_path });
       // file.data.tmp_path
-      console.log("成功");
-      console.log(file);
     },
     /** tabs改变时-动态参数 */
     async changeTabs() {
@@ -214,6 +257,6 @@ export default {
   height: 99%;
 }
 .ql-container {
-    min-height: 500px;
+  min-height: 500px;
 }
 </style>
