@@ -73,14 +73,26 @@
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane name="5" label="商品内容" :disabled="disabled">
-            <!-- 富文本 -->
+          <!-- 富文本 -->
+          <el-form-item>
+            <el-button type="primary">添加商品</el-button>
+            <quill-editor></quill-editor>
+          </el-form-item>
         </el-tab-pane>
       </el-tabs>
     </el-form>
   </el-card>
 </template>
 <script>
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+
+import { quillEditor } from "vue-quill-editor";
 export default {
+  components: {
+    quillEditor
+  },
   data() {
     return {
       active: "1",
@@ -113,7 +125,7 @@ export default {
       arrStaticparams: [],
       // 上传图片
       headers: {
-          Authorization: localStorage.getItem('token')
+        Authorization: localStorage.getItem("token")
       }
     };
   },
@@ -122,19 +134,19 @@ export default {
   },
   methods: {
     handlePreview(file) {
-        // file.response.data.tmp_path
-        console.log('预览')
-        console.log(file)
+      // file.response.data.tmp_path
+      console.log("预览");
+      console.log(file);
     },
     handleRemove(file) {
-        // file.response.data.tmp_path
-        console.log('移除')
-        console.log(file)
+      // file.response.data.tmp_path
+      console.log("移除");
+      console.log(file);
     },
     handleSuccess(file) {
-        // file.data.tmp_path
-        console.log('成功')
-        console.log(file)
+      // file.data.tmp_path
+      console.log("成功");
+      console.log(file);
     },
     /** tabs改变时-动态参数 */
     async changeTabs() {
@@ -200,5 +212,8 @@ export default {
 <style>
 .card-box {
   height: 99%;
+}
+.ql-container {
+    min-height: 500px;
 }
 </style>
