@@ -19,7 +19,7 @@
       :model="form"
       style="height: 400px; overflow: auto;"
     >
-      <el-tabs v-model="active" tab-position="left">
+      <el-tabs v-model="active" tab-position="left" @tab-click="changeTabs()">
         <el-tab-pane name="1" label="基本信息">
           <el-form-item label="商品名称">
             <el-input v-model="form.goods_name"></el-input>
@@ -42,10 +42,10 @@
             clearable
           ></el-cascader>
         </el-tab-pane>
-        <el-tab-pane name="2" label="商品参数">商品参数</el-tab-pane>
-        <el-tab-pane name="3" label="商品属性">商品属性</el-tab-pane>
-        <el-tab-pane name="4" label="商品图片">商品图片</el-tab-pane>
-        <el-tab-pane name="5" label="商品内容">商品内容</el-tab-pane>
+        <el-tab-pane name="2" label="商品参数" :disabled="disabled">商品参数</el-tab-pane>
+        <el-tab-pane name="3" label="商品属性" :disabled="disabled">商品属性</el-tab-pane>
+        <el-tab-pane name="4" label="商品图片" :disabled="disabled">商品图片</el-tab-pane>
+        <el-tab-pane name="5" label="商品内容" :disabled="disabled">商品内容</el-tab-pane>
       </el-tabs>
     </el-form>
   </el-card>
@@ -67,21 +67,35 @@ export default {
         attrs: ""
       },
       // 级联选择器
-      selectedOptions: [1, 3, 6],
+    //   selectedOptions: [1, 3, 6],
+      selectedOptions: [],
       options: [],
       defaultProps: {
         value: "cat_id",
         label: "cat_name",
         children: "children",
         expandTrigger: "hover"
-      }
+      },
+      disabled: true
     };
   },
   created() {
     this.getCategories();
   },
   methods: {
-    handleChange(value) {},
+    /** tabs改变时 */
+    changeTabs() {
+        if (this.active === '2') {
+            if (this.selectedOptions.length === 0) {
+                this.$message.warning('请选择商品三级分类')
+                return
+            }
+
+        }
+    },
+    handleChange(value) {
+        this.disabled = false
+    },
     /** 获取商品三级分类数据 */
     async getCategories() {
       const res = await this.$http.get(`categories?type=3`);
