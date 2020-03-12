@@ -31,8 +31,20 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" icon="el-icon-edit" size="mini" circle></el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="showDelGoodsMsgBox(scope.row.goods_id)"></el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-edit"
+            size="mini"
+            circle
+            @click="showEditGoodsMsgBox(scope.row.goods_id)"
+          ></el-button>
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            circle
+            @click="showDelGoodsMsgBox(scope.row.goods_id)"
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -65,6 +77,15 @@ export default {
     this.getGoodsList();
   },
   methods: {
+    /** 显示编辑页面 */
+    async showEditGoodsMsgBox(goodsId) {
+      this.$router.push({name: 'goodsedit', params: {goodsId: goodsId}})
+      // const res = this.$http.get(`goods/${goodsId}`);
+      // const {
+      //   data,
+      //   meta: { msg, status }
+      // } = res.data;
+    },
     /** 显示删除商品-确认对话框 */
     showDelGoodsMsgBox(goods_id) {
       this.$confirm("此操作将永久删除该商品, 是否继续?", "提示", {
