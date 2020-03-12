@@ -67,8 +67,8 @@ export default {
         attrs: ""
       },
       // 级联选择器
-    //   selectedOptions: [1, 3, 6],
-      selectedOptions: [],
+      selectedOptions: [1, 3, 6],
+    //   selectedOptions: [],
       options: [],
       defaultProps: {
         value: "cat_id",
@@ -76,7 +76,7 @@ export default {
         children: "children",
         expandTrigger: "hover"
       },
-      disabled: true
+      disabled: false
     };
   },
   created() {
@@ -84,17 +84,17 @@ export default {
   },
   methods: {
     /** tabs改变时 */
-    changeTabs() {
+    async changeTabs() {
         if (this.active === '2') {
             if (this.selectedOptions.length === 0) {
                 this.$message.warning('请选择商品三级分类')
                 return
             }
-
+            const res = await this.$http.get(`categories/${this.selectedOptions[2]}/attributes?sel=many`)
         }
     },
     handleChange(value) {
-        this.disabled = false
+        // this.disabled = false
     },
     /** 获取商品三级分类数据 */
     async getCategories() {
