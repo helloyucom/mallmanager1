@@ -27,14 +27,12 @@
       <el-table-column prop="goods_price" label="商品价格(元)"></el-table-column>
       <el-table-column prop="goods_weight" label="商品重量"></el-table-column>
       <el-table-column label="创建日期">
-        <template slot-scope="scope">
-          {{scope.row.add_time | fmtDate}}
-        </template>
+        <template slot-scope="scope">{{scope.row.add_time | fmtDate}}</template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" circle></el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini" circle></el-button>
+          <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="showDelGoodsMsgBox(scope.row.goods_id)"></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,11 +65,39 @@ export default {
     this.getGoodsList();
   },
   methods: {
+    /** 显示删除商品-确认对话框 */
+    showDelGoodsMsgBox(goods_id) {
+      this.$confirm("此操作将永久删除该商品, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          // goods/:id
+          const res = await this.$http.delete(`goods/${goods_id}`);
+          const {
+            meta: { msg, status }
+          } = res.data;
+          if (status === 200) {
+            this.$message.success({
+              type: "success",
+              message: "删除成功!"
+            });
+            this.getGoodsList();
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
     /** 清空搜索框 */
     clearGoods() {
-        this.query = ''
-        this.pagenum = 1
-        this.getGoodsList()
+      this.query = "";
+      this.pagenum = 1;
+      this.getGoodsList();
     },
     /** 搜索商品 */
     async searchGoods() {
