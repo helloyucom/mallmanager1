@@ -26,7 +26,11 @@
       <el-table-column prop="goods_name" label="商品名称" width="500"></el-table-column>
       <el-table-column prop="goods_price" label="商品价格(元)"></el-table-column>
       <el-table-column prop="goods_weight" label="商品重量"></el-table-column>
-      <el-table-column prop="add_time" label="创建日期"></el-table-column>
+      <el-table-column label="创建日期">
+        <template slot-scope="scope">
+          {{scope.row.add_time | fmtDate}}
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" circle></el-button>
