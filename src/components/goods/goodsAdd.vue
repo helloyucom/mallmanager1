@@ -42,7 +42,14 @@
             clearable
           ></el-cascader>
         </el-tab-pane>
-        <el-tab-pane name="2" label="商品参数" :disabled="disabled">商品参数</el-tab-pane>
+        <el-tab-pane name="2" label="商品参数" :disabled="disabled">
+          <!-- 展示三级商品分类的动态参数 -->
+          <el-form-item :label="item1.attr_name" v-for="(item1, i) in arrDyparams" :key="i">
+            <el-checkbox-group v-model="item1.attr_vals">
+              <el-checkbox border :label="item2" v-for="(item2, i) in item1.attr_vals" :key="i"></el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+        </el-tab-pane>
         <el-tab-pane name="3" label="商品属性" :disabled="disabled">商品属性</el-tab-pane>
         <el-tab-pane name="4" label="商品图片" :disabled="disabled">商品图片</el-tab-pane>
         <el-tab-pane name="5" label="商品内容" :disabled="disabled">商品内容</el-tab-pane>
@@ -68,7 +75,7 @@ export default {
       },
       // 级联选择器
       selectedOptions: [1, 3, 6],
-    //   selectedOptions: [],
+      //   selectedOptions: [],
       options: [],
       defaultProps: {
         value: "cat_id",
@@ -76,25 +83,43 @@ export default {
         children: "children",
         expandTrigger: "hover"
       },
-      disabled: false
+      disabled: false, // 废弃
+      // 动态参数
+      arrDyparams: [],
+      checkedList: []
     };
   },
   created() {
     this.getCategories();
   },
   methods: {
-    /** tabs改变时 */
+    /** tabs改变时-动态参数 */
     async changeTabs() {
-        if (this.active === '2') {
-            if (this.selectedOptions.length === 0) {
-                this.$message.warning('请选择商品三级分类')
-                return
-            }
-            const res = await this.$http.get(`categories/${this.selectedOptions[2]}/attributes?sel=many`)
+      if (this.active === "2") {
+        if (this.selectedOptions.length !== 3) {
+          this.$message.warning("请选择商品三级分类");
+          return;
         }
+        const res = await this.$http.get(
+          `categories/${this.selectedOptions[2]}/attributes?sel=many`
+        );
+        const {
+          data,
+          meta: { msg, status }
+        } = res.data;
+        if (status === 200) {
+          this.arrDyparams = data;
+          this.arrDyparams.forEach(element => {
+            element.attr_vals =
+              element.attr_vals.length === 0
+                ? []
+                : element.attr_vals.trim().split(",");
+          });
+        }
+      }
     },
     handleChange(value) {
-        // this.disabled = false
+      // this.disabled = false
     },
     /** 获取商品三级分类数据 */
     async getCategories() {
