@@ -44,11 +44,11 @@
         </el-tab-pane>
         <el-tab-pane name="2" label="商品参数">
           <!-- 展示三级商品分类的动态参数 -->
-          <!-- <el-form-item :label="item1.attr_name" v-for="(item1, i) in arrDyparams" :key="i">
+          <el-form-item :label="item1.attr_name" v-for="(item1, i) in arrDyparams" :key="i">
             <el-checkbox-group v-model="item1.attr_vals">
               <el-checkbox border :label="item2" v-for="(item2, i) in item1.attr_vals" :key="i"></el-checkbox>
             </el-checkbox-group>
-          </el-form-item>-->
+          </el-form-item>
         </el-tab-pane>
         <el-tab-pane name="3" label="商品属性">
           <!-- 展示三级商品分类的静态参数 -->
