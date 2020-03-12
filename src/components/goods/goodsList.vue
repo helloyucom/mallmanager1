@@ -17,7 +17,7 @@
         </el-input>
       </el-col>
       <el-col :span="18">
-        <el-button type="success" @click="showAddGoodsDialog()">添加商品</el-button>
+        <el-button type="success" @click="$router.push({name: 'goodsadd'})">添加商品</el-button>
       </el-col>
     </el-row>
     <!-- 表格数据 -->
