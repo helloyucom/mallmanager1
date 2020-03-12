@@ -5,7 +5,7 @@
     <!-- 提示 -->
     <el-alert title="添加商品信息" type="success" center show-icon></el-alert>
     <!-- 步骤 -->
-    <el-steps :active="parseInt(active)" finish-status="success" simple style="margin-top: 20px">
+    <el-steps :active="1*active" finish-status="success" simple style="margin-top: 20px">
       <el-step title="基本信息"></el-step>
       <el-step title="商品参数"></el-step>
       <el-step title="商品属性"></el-step>
