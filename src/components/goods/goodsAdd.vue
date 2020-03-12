@@ -50,9 +50,31 @@
             </el-checkbox-group>
           </el-form-item>
         </el-tab-pane>
-        <el-tab-pane name="3" label="商品属性" :disabled="disabled">商品属性</el-tab-pane>
-        <el-tab-pane name="4" label="商品图片" :disabled="disabled">商品图片</el-tab-pane>
-        <el-tab-pane name="5" label="商品内容" :disabled="disabled">商品内容</el-tab-pane>
+        <el-tab-pane name="3" label="商品属性" :disabled="disabled">
+          <!-- 展示三级商品分类的静态参数 -->
+          <el-form-item :label="item1.attr_name" v-for="(item1, i) in arrStaticparams" :key="i">
+            <el-input v-model="item1.attr_vals"></el-input>
+          </el-form-item>
+        </el-tab-pane>
+        <el-tab-pane name="4" label="商品图片" :disabled="disabled">
+          <!-- 上传图片 -->
+          <el-form-item>
+            <el-upload
+              action="http://127.0.0.1:8888/api/private/v1/upload"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :on-success="handleSuccess"
+              :headers="headers"
+              list-type="picture"
+            >
+              <el-button size="small" type="primary">点击上传</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+          </el-form-item>
+        </el-tab-pane>
+        <el-tab-pane name="5" label="商品内容" :disabled="disabled">
+            <!-- 富文本 -->
+        </el-tab-pane>
       </el-tabs>
     </el-form>
   </el-card>
@@ -86,13 +108,34 @@ export default {
       disabled: false, // 废弃
       // 动态参数
       arrDyparams: [],
-      checkedList: []
+      checkedList: [],
+      // 静态参数
+      arrStaticparams: [],
+      // 上传图片
+      headers: {
+          Authorization: localStorage.getItem('token')
+      }
     };
   },
   created() {
     this.getCategories();
   },
   methods: {
+    handlePreview(file) {
+        // file.response.data.tmp_path
+        console.log('预览')
+        console.log(file)
+    },
+    handleRemove(file) {
+        // file.response.data.tmp_path
+        console.log('移除')
+        console.log(file)
+    },
+    handleSuccess(file) {
+        // file.data.tmp_path
+        console.log('成功')
+        console.log(file)
+    },
     /** tabs改变时-动态参数 */
     async changeTabs() {
       if (this.active === "2") {
@@ -115,6 +158,27 @@ export default {
                 ? []
                 : element.attr_vals.trim().split(",");
           });
+        }
+      } else if (this.active === "3") {
+        if (this.selectedOptions.length !== 3) {
+          this.$message.warning("请选择商品三级分类");
+          return;
+        }
+        const res = await this.$http.get(
+          `categories/${this.selectedOptions[2]}/attributes?sel=only`
+        );
+        const {
+          data,
+          meta: { msg, status }
+        } = res.data;
+        if (status === 200) {
+          this.arrStaticparams = data;
+          //   this.arrStaticparams.forEach(element => {
+          //     element.attr_vals =
+          //       element.attr_vals.length === 0
+          //         ? []
+          //         : element.attr_vals.trim().split(",");
+          //   });
         }
       }
     },
