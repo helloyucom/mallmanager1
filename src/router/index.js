@@ -11,6 +11,7 @@ import GoodsList from '@/components/goods/goodsList.vue'
 import GoodsAdd from '@/components/goods/goodsAdd.vue'
 import GoodsEdit from '@/components/goods/goodsEdit.vue'
 import CateParams from '@/components/goods/cateParams.vue'
+import CateList from '@/components/goods/cateList.vue'
 
 Vue.use(Router)
 
@@ -32,7 +33,8 @@ const router = new Router({
         { name: 'goods', path: '/goods', component: GoodsList },
         { name: 'goodsadd', path: '/goodsadd', component: GoodsAdd },
         { name: 'goodsedit', path: '/goodsedit', component: GoodsEdit },
-        { name: 'params', path: '/params', component: CateParams }
+        { name: 'params', path: '/params', component: CateParams },
+        { name: 'categories', path: '/categories', component: CateList }
       ]
     }
   ]
