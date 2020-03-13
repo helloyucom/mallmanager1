@@ -50,6 +50,7 @@ export default {
         }
       };
       let option = { ...option1, ...option2 };
+      
       // 使用实例
       myChart.setOption(option);
     }
